@@ -1,6 +1,6 @@
 # Hypothermia Trading Bot
 
-> Algorithmic trading system for XAU/USD (Gold) and synthetic indices (Boom 1000 / Crash 1000) on the Deriv platform — with a live Streamlit monitoring dashboard.
+> Algorithmic trading system for XAU/USD (Gold) and Deriv synthetic indices — EMA + ATR multi-timeframe strategy with a live Streamlit monitoring dashboard.
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
@@ -9,11 +9,31 @@
 
 ---
 
+## Demo
+
+![Bot Dashboard Demo](screenshots/demo.gif)
+
+---
+
+## Screenshots
+
+### Live Dashboard
+![Live Dashboard](screenshots/dashboard.png)
+
+### Trade Chart with Signals
+![Trade Chart](screenshots/chart.png)
+
+### Backtest Results
+![Backtest Results](screenshots/backtest.png)
+
+---
+
 ## About
 
-Hypothermia is a live trading bot that connects to the Deriv API via WebSockets, executes trades based on EMA + ATR strategy rules, and streams real-time performance data to a Streamlit dashboard. It supports three instruments:
+Hypothermia connects to the Deriv API via WebSockets, executes trades based on EMA + ATR strategy rules, and streams real-time performance data to a Streamlit dashboard.
 
-- **XAU/USD** — Gold spot (M5 + H1 timeframe strategy)
+**Supported instruments:**
+- **XAU/USD** — Gold spot (M5 + H1 multi-timeframe strategy)
 - **Boom 1000** — Deriv synthetic index
 - **Crash 1000** — Deriv synthetic index
 
@@ -21,17 +41,16 @@ Hypothermia is a live trading bot that connects to the Deriv API via WebSockets,
 
 ## Strategy (XAU/USD)
 
-The core strategy uses a multi-timeframe approach:
+Multi-timeframe approach with dynamic risk sizing:
 
-| Signal | Description |
-|--------|-------------|
+| Component | Detail |
+|-----------|--------|
 | Trend filter | H1 EMA-21 determines directional bias |
 | Entry trigger | M5 EMA-50 crossover in trend direction |
-| ATR zones | Dynamic support/resistance zones (ATR-based) |
-| Exit | Chandelier stop tiers (multi-level ATR trailing stop) |
-| Session | Configurable trading window (default: London/NY overlap) |
-
-Risk is sized per-trade based on ATR, not fixed pip values.
+| ATR zones | Dynamic support/resistance zones |
+| Exit | Chandelier stop tiers — multi-level ATR trailing stop |
+| Risk sizing | Per-trade ATR-based sizing, not fixed pip values |
+| Session | Configurable window (default: London/NY overlap) |
 
 ---
 
@@ -39,12 +58,11 @@ Risk is sized per-trade based on ATR, not fixed pip values.
 
 - Live WebSocket connection to Deriv API
 - Real-time trade execution and position management
-- Streamlit dashboard with live PnL, trade log, and chart overlays
-- Backtesting module for strategy validation
-- Parameter sensitivity analysis
-- Portfolio risk tools
-- Commodity data fetcher (for external price feeds)
-- Archive of historical performance results
+- Streamlit dashboard — live PnL, trade log, chart overlays
+- Full backtesting engine for strategy validation
+- Parameter sensitivity sweeps
+- Portfolio-level risk analysis
+- Commodity data fetcher for external price feeds
 
 ---
 
@@ -52,21 +70,21 @@ Risk is sized per-trade based on ATR, not fixed pip values.
 
 ```
 hypothermia-bot/
-├── xau_bot.py              # Main XAU/USD trading bot
-├── xau_strategy.py         # Signal generation (EMA, ATR, chandelier)
-├── xau_config.py           # Strategy parameters
-├── deriv_boom1000_bot.py   # Boom 1000 bot
-├── deriv_crash1000_bot.py  # Crash 1000 bot
-├── dashboard.py            # Streamlit live dashboard
-├── commodity_backtest.py   # Backtest engine
-├── frequency_backtest.py   # Frequency-based backtest
-├── parameter_sensitivity.py # Strategy parameter sweeps
-├── portfolio_risk.py       # Portfolio-level risk analysis
-├── risk_comparison.py      # Risk model comparison
-├── fetch_commodity_data.py # External data fetcher
-├── enhancement_test.py     # Strategy enhancement tests
-├── data/                   # Historical price data
-└── archive/                # Past backtest results
+├── xau_bot.py               # Main XAU/USD bot
+├── xau_strategy.py          # Signal generation (EMA, ATR, chandelier)
+├── xau_config.py            # Strategy parameters
+├── deriv_boom1000_bot.py    # Boom 1000 bot
+├── deriv_crash1000_bot.py   # Crash 1000 bot
+├── dashboard.py             # Streamlit live dashboard
+├── commodity_backtest.py    # Backtest engine
+├── frequency_backtest.py    # Frequency-based backtest
+├── parameter_sensitivity.py # Parameter sweeps
+├── portfolio_risk.py        # Portfolio risk analysis
+├── risk_comparison.py       # Risk model comparison
+├── fetch_commodity_data.py  # External data fetcher
+├── screenshots/             # README screenshots
+├── data/                    # Historical price data
+└── archive/                 # Past backtest results
 ```
 
 ---
@@ -96,15 +114,13 @@ DERIV_API_TOKEN=your_api_token_here
 DERIV_APP_ID=your_app_id_here
 ```
 
-### Run the Bot
+### Run
 
 ```bash
+# Live bot
 python xau_bot.py
-```
 
-### Run the Dashboard
-
-```bash
+# Monitoring dashboard
 streamlit run dashboard.py
 ```
 
@@ -114,18 +130,18 @@ streamlit run dashboard.py
 
 | Package | Purpose |
 |---------|---------|
-| `pandas` | Data manipulation and OHLC processing |
-| `numpy` | Numerical calculations (EMA, ATR) |
-| `websockets` | Deriv API real-time connection |
-| `streamlit` | Live monitoring dashboard |
+| `pandas` | OHLC data processing |
+| `numpy` | EMA, ATR calculations |
+| `websockets` | Deriv API connection |
+| `streamlit` | Live dashboard |
 | `plotly` | Interactive charts |
-| `python-dotenv` | Environment variable management |
+| `python-dotenv` | Environment config |
 
 ---
 
 ## Disclaimer
 
-This software is for educational and research purposes. Trading financial instruments carries significant risk. Past performance does not guarantee future results.
+For educational and research purposes. Trading carries significant risk. Past performance does not guarantee future results.
 
 ---
 
