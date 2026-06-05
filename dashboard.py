@@ -15,88 +15,6 @@ import numpy as np
 import plotly.graph_objects as go
 
 # ── BACKTEST CONSTANTS (pre-computed, no CSV needed on server) ─────────────────
-BT_CRASH1000 = {
-    "symbol":        "CRASH1000",
-    "direction":     "BUY",
-    "label":         "Crash 1000 · Spike BUY + H1 Bull Filter (S5)",
-    "mean_r":        1.010,
-    "std_r":         2.836,
-    "wr":            0.5952,
-    "pf":            2.417,
-    "total_trades":  793,
-    "period":        "Sep 2025 – Apr 2026",
-    "months":        8,
-    "prof_months":   8,
-    "kelly_full":    0.224,
-    "kelly_half":    0.112,
-    "our_risk":      0.02,
-    "ruin_prob":     0.10,
-    "mc_p5":         2_100_000,
-    "mc_p25":        5_800_000,
-    "mc_p50":        11_400_000,
-    "mc_p75":        22_000_000,
-    "mc_p95":        58_000_000,
-    "mc_dd_median":  8.2,
-    "mc_dd_p95":     21.4,
-    "p_value":       0.000000001,
-    "t_stat":        10.034,
-    "ci_pf_lo":      2.025,
-    "ci_pf_hi":      2.908,
-    "ci_wr_lo":      0.561,
-    "ci_wr_hi":      0.629,
-    "ci_avr_lo":     0.810,
-    "ci_avr_hi":     1.210,
-    "trades_for_sig": 93,
-    "max_streak":    6,
-    "avg_gap_loss":  -1.869,
-    "gap_risk_mult": 1.86,
-    "starting_bal":  10_000,
-    "filter":        "M5 spike + H1 close > H1 EMA21 (bullish regime)",
-    "oos_pf":        2.377,
-    "oos_wr":        0.598,
-}
-
-BT_BOOM1000 = {
-    "symbol":        "BOOM1000",
-    "direction":     "SELL",
-    "label":         "Boom 1000 · Spike SELL + H1 Bear Filter (S10 · EMA14)",
-    "mean_r":        1.519,
-    "std_r":         2.414,
-    "wr":            0.6765,
-    "pf":            4.993,
-    "total_trades":  102,
-    "period":        "Sep 2025 – Apr 2026",
-    "months":        8,
-    "prof_months":   8,
-    "kelly_full":    0.249,
-    "kelly_half":    0.125,
-    "our_risk":      0.02,
-    "ruin_prob":     0.00,
-    "mc_p5":         3_200_000,
-    "mc_p25":        8_900_000,
-    "mc_p50":        18_500_000,
-    "mc_p75":        38_000_000,
-    "mc_p95":        95_000_000,
-    "mc_dd_median":  9.1,
-    "mc_dd_p95":     22.8,
-    "p_value":       0.000000000212,
-    "t_stat":        6.353,
-    "ci_pf_lo":      3.126,
-    "ci_pf_hi":      8.411,
-    "ci_wr_lo":      0.586,
-    "ci_wr_hi":      0.767,
-    "ci_avr_lo":     1.050,
-    "ci_avr_hi":     1.987,
-    "trades_for_sig": 93,
-    "max_streak":    6,
-    "avg_gap_loss":  -1.435,
-    "gap_risk_mult": 1.44,
-    "starting_bal":  10_000,
-    "filter":        "M5 EMA8>EMA21 + H1 close < H1 EMA14 (bearish regime)",
-    "oos_pf":        3.590,
-    "oos_wr":        0.630,
-}
-
 BT_XAUUSD = {
     "symbol":        "frxXAUUSD",
     "direction":     "BOTH",
@@ -138,46 +56,139 @@ BT_XAUUSD = {
     "oos_wr":        0.540,
 }
 
-# Keep BT as alias for backward compat
-BT = BT_CRASH1000
+BT_EURUSD = {
+    "symbol":        "frxEURUSD",
+    "direction":     "BOTH",
+    "label":         "EUR/USD · M5 EMA Pullback + H1 Trend Filter (zone=0.75ATR)",
+    "mean_r":        0.250,
+    "std_r":         1.50,
+    "wr":            0.487,
+    "pf":            1.547,
+    "total_trades":  1440,
+    "period":        "Aug 2025 – May 2026",
+    "months":        9,
+    "prof_months":   9,
+    "kelly_full":    0.218,
+    "kelly_half":    0.109,
+    "our_risk":      0.02,
+    "ruin_prob":     0.5,
+    "mc_p5":         1_200_000,
+    "mc_p25":        3_500_000,
+    "mc_p50":        8_000_000,
+    "mc_p75":        17_000_000,
+    "mc_p95":        42_000_000,
+    "mc_dd_median":  14.0,
+    "mc_dd_p95":     33.0,
+    "p_value":       0.0000001,
+    "t_stat":        6.33,
+    "ci_pf_lo":      1.36,
+    "ci_pf_hi":      1.74,
+    "ci_wr_lo":      0.461,
+    "ci_wr_hi":      0.513,
+    "ci_avr_lo":     0.171,
+    "ci_avr_hi":     0.329,
+    "trades_for_sig": 60,
+    "max_streak":    9,
+    "avg_gap_loss":  -1.0,
+    "gap_risk_mult": 1.0,
+    "starting_bal":  10_000,
+    "filter":        "Close within 0.75 ATR of M5 EMA50 + H1 close vs H1 EMA21 + session 07:00-20:59 UTC",
+    "oos_pf":        1.334,
+    "oos_wr":        0.480,
+}
+
+BT_GBPUSD = {
+    "symbol":        "frxGBPUSD",
+    "direction":     "BUY",
+    "label":         "GBP/USD · Spike Reversion (bearish body > 2.0× ATR, BUY only)",
+    "mean_r":        0.377,
+    "std_r":         1.50,
+    "wr":            0.460,
+    "pf":            1.695,
+    "total_trades":  135,
+    "period":        "Aug 2025 – May 2026",
+    "months":        9,
+    "prof_months":   8,
+    "kelly_full":    0.167,
+    "kelly_half":    0.084,
+    "our_risk":      0.02,
+    "ruin_prob":     3.5,
+    "mc_p5":         15_000,
+    "mc_p25":        21_000,
+    "mc_p50":        26_000,
+    "mc_p75":        33_000,
+    "mc_p95":        46_000,
+    "mc_dd_median":  12.0,
+    "mc_dd_p95":     28.0,
+    "p_value":       0.002,
+    "t_stat":        2.92,
+    "ci_pf_lo":      1.20,
+    "ci_pf_hi":      2.35,
+    "ci_wr_lo":      0.376,
+    "ci_wr_hi":      0.544,
+    "ci_avr_lo":     0.124,
+    "ci_avr_hi":     0.630,
+    "trades_for_sig": 60,
+    "max_streak":    8,
+    "avg_gap_loss":  -1.0,
+    "gap_risk_mult": 1.0,
+    "starting_bal":  10_000,
+    "filter":        "Bearish body (open − close) > 2.0 × ATR | BUY reversal | session 07:00-20:59 UTC | no H1 regime filter",
+    "oos_pf":        1.831,
+    "oos_wr":        0.460,
+}
+
+BT_USDJPY = {
+    "symbol":        "frxUSDJPY",
+    "direction":     "BOTH",
+    "label":         "USD/JPY · M5 EMA Pullback + H1 Trend Filter (zone=0.30ATR)",
+    "mean_r":        0.277,
+    "std_r":         1.50,
+    "wr":            0.521,
+    "pf":            1.648,
+    "total_trades":  909,
+    "period":        "Aug 2025 – May 2026",
+    "months":        9,
+    "prof_months":   9,
+    "kelly_full":    0.303,
+    "kelly_half":    0.152,
+    "our_risk":      0.02,
+    "ruin_prob":     0.4,
+    "mc_p5":         1_300_000,
+    "mc_p25":        3_800_000,
+    "mc_p50":        8_500_000,
+    "mc_p75":        18_000_000,
+    "mc_p95":        44_000_000,
+    "mc_dd_median":  13.5,
+    "mc_dd_p95":     31.0,
+    "p_value":       0.0000001,
+    "t_stat":        5.56,
+    "ci_pf_lo":      1.45,
+    "ci_pf_hi":      1.86,
+    "ci_wr_lo":      0.488,
+    "ci_wr_hi":      0.554,
+    "ci_avr_lo":     0.177,
+    "ci_avr_hi":     0.377,
+    "trades_for_sig": 60,
+    "max_streak":    8,
+    "avg_gap_loss":  -1.0,
+    "gap_risk_mult": 1.0,
+    "starting_bal":  10_000,
+    "filter":        "Close within 0.30 ATR of M5 EMA50 + H1 close vs H1 EMA21 + session 07:00-20:59 UTC",
+    "oos_pf":        1.546,
+    "oos_wr":        0.510,
+}
 
 BT_MAP = {
-    "CRASH1000":  BT_CRASH1000,
-    "BOOM1000":   BT_BOOM1000,
     "frxXAUUSD":  BT_XAUUSD,
+    "EURUSD":     BT_EURUSD,
+    "GBPUSD":     BT_GBPUSD,
+    "USDJPY":     BT_USDJPY,
 }
 
 # ── BOT REGISTRY ──────────────────────────────────────────────────────────────
 # Add new bots here — nothing else needs changing
 BOTS = {
-    "CRASH1000": {
-        "label":      "Crash 1000",
-        "symbol":     "CRASH1000",
-        "session":    "24hr",
-        "type":       "spike",
-        "state":      BASE_DIR / "state_crash1000.json",
-        "csv":        BASE_DIR / "live_trades_crash1000.csv",
-        "log":        BASE_DIR / "bot_crash1000.log",
-        "color":      "#CCCCCC",
-        "accent":     "#FFFFFF",
-        "dot":        "white",
-        "max_trades": 6,
-        "max_hold":   24,
-    },
-    "BOOM1000": {
-        "label":      "Boom 1000",
-        "symbol":     "BOOM1000",
-        "session":    "24hr",
-        "type":       "spike",
-        "state":      BASE_DIR / "state_boom1000.json",
-        "csv":        BASE_DIR / "live_trades_boom1000.csv",
-        "log":        BASE_DIR / "bot_boom1000.log",
-        "color":      "#00AAFF",
-        "accent":     "#66CCFF",
-        "dot":        "blue",
-        "max_trades": 6,
-        "max_hold":   24,
-    },
     "frxXAUUSD": {
         "label":      "XAUUSD Gold",
         "symbol":     "frxXAUUSD",
@@ -192,10 +203,82 @@ BOTS = {
         "max_trades": 12,
         "max_hold":   6,
     },
+    "EURUSD": {
+        "label":      "EUR/USD",
+        "symbol":     "EURUSD",
+        "session":    "07:00-20:59 UTC",
+        "type":       "pullback",
+        "state":      BASE_DIR / "state_eurusd.json",
+        "csv":        BASE_DIR / "live_trades_eurusd.csv",
+        "log":        BASE_DIR / "bot_eurusd.log",
+        "color":      "#0077FF",
+        "accent":     "#4499FF",
+        "dot":        "blue",
+        "max_trades": 12,
+        "max_hold":   6,
+    },
+    "GBPUSD": {
+        "label":      "GBP/USD",
+        "symbol":     "GBPUSD",
+        "session":    "07:00-20:59 UTC",
+        "type":       "spike",
+        "state":      BASE_DIR / "state_gbpusd.json",
+        "csv":        BASE_DIR / "live_trades_gbpusd.csv",
+        "log":        BASE_DIR / "bot_gbpusd.log",
+        "color":      "#CC00FF",
+        "accent":     "#DD66FF",
+        "dot":        "purple",
+        "max_trades": 12,
+        "max_hold":   24,
+    },
+    "USDJPY": {
+        "label":      "USD/JPY",
+        "symbol":     "USDJPY",
+        "session":    "07:00-20:59 UTC",
+        "type":       "pullback",
+        "state":      BASE_DIR / "state_usdjpy.json",
+        "csv":        BASE_DIR / "live_trades_usdjpy.csv",
+        "log":        BASE_DIR / "bot_usdjpy.log",
+        "color":      "#00BBCC",
+        "accent":     "#66DDEE",
+        "dot":        "white",
+        "max_trades": 12,
+        "max_hold":   6,
+    },
 }
 
 st.set_page_config(page_title="CTM Trading — Hypothermia Bots", page_icon="⚡",
                    layout="wide", initial_sidebar_state="collapsed")
+
+# ── PASSWORD GATE ──────────────────────────────────────────────────────────────
+_DASHBOARD_PASSWORD = "hypothermia2026"
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.markdown("""
+    <style>
+    html, body, [data-testid="stApp"] { background: #080808 !important; }
+    [data-testid="stAppViewContainer"] { background: #080808 !important; }
+    #MainMenu, footer, [data-testid="stToolbar"] { visibility: hidden; }
+    </style>
+    """, unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 1.2, 1])
+    with col2:
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        st.markdown("### ⚡ CTM Trading — Hypothermia Bots")
+        st.markdown("Private dashboard. Enter password to continue.")
+        pwd = st.text_input("Password", type="password", label_visibility="collapsed",
+                            placeholder="Enter password...")
+        if st.button("Enter", use_container_width=True):
+            if pwd == _DASHBOARD_PASSWORD:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("Incorrect password.")
+    st.stop()
+# ── END PASSWORD GATE ───────────────────────────────────────────────────────────
 
 st.markdown("""
 <style>
@@ -222,11 +305,11 @@ html, body, [data-testid="stApp"] { background: #080808 !important; font-family:
 .hero-grid { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; position: relative; z-index: 1; }
 .hero-logo { display: flex; align-items: center; gap: 14px; }
 .hero-icon { width: 44px; height: 44px; background: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-.hero-title { font-size: 22px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.3px; }
+.hero-title { font-size: 26px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.6px; }
 .hero-name  { font-size: 13px; color: #999; font-weight: 500; margin-top: 2px; }
 .hero-sub   { font-size: 11px; color: #555; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
 .hero-right { text-align: right; }
-.hero-time  { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 600; color: #FFFFFF; }
+.hero-time  { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: #FFFFFF; }
 .hero-date  { font-size: 11px; color: #555; margin-top: 2px; }
 .glass { background: #111111; border: 1px solid #1E1E1E; border-radius: 14px; position: relative; overflow: hidden; }
 .glass::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); }
@@ -239,7 +322,7 @@ html, body, [data-testid="stApp"] { background: #080808 !important; font-family:
 .metric-card.orange::after { background: linear-gradient(90deg, #663300, #CC6600, #FF8800); }
 .metric-card.purple::after { background: linear-gradient(90deg, #440066, #8800CC, #CC00FF); }
 .metric-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
-.metric-value { font-size: 24px; font-weight: 800; color: #FFFFFF; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+.metric-value { font-size: 28px; font-weight: 900; color: #FFFFFF; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
 .metric-sub   { font-size: 11px; color: #444; margin-top: 4px; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
 @keyframes glow        { 0%,100%{box-shadow:0 0 6px rgba(0,200,100,0.6)}   50%{box-shadow:0 0 18px rgba(0,200,100,0.9)} }
@@ -273,7 +356,8 @@ html, body, [data-testid="stApp"] { background: #080808 !important; font-family:
 .trade-stat-label { font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px; }
 .trade-stat-val   { font-size:14px;font-weight:700;color:#E0E0E0;font-family:'JetBrains Mono',monospace; }
 .trade-table { width:100%;border-collapse:collapse;font-size:11px; }
-.trade-table thead th { background:#0D0D0D;color:#555;font-size:9px;text-transform:uppercase;letter-spacing:1px;padding:8px 10px;text-align:left;border-bottom:1px solid #1E1E1E; }
+.trade-table thead th { background:#0D0D0D;color:#555;font-size:9px;text-transform:uppercase;letter-spacing:1px;padding:8px 10px;text-align:left;border-bottom:1px solid #1E1E1E;position:sticky;top:0;z-index:2; }
+.scroll-table { overflow-y:auto;max-height:420px; }
 .trade-table tbody tr { border-bottom:1px solid #161616; }
 .trade-table tbody tr:hover { background:#161616; }
 .trade-table tbody td { padding:7px 10px; }
@@ -283,6 +367,14 @@ html, body, [data-testid="stApp"] { background: #080808 !important; font-family:
 .log-box { background:#000;border:1px solid #1A1A1A;border-radius:10px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#444;max-height:180px;overflow-y:auto;line-height:1.7;white-space:pre-wrap; }
 .overview-card { background:#0C0C0C;border:1px solid #1E1E1E;border-radius:14px;padding:18px 20px;text-align:center; }
 div[data-testid="metric-container"] { display:none; }
+.hero::after { content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15) 30%,rgba(255,255,255,0.15) 70%,transparent);pointer-events:none; }
+.section-head { font-size:11px;color:#444;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;padding-left:10px;border-left:2px solid #2A2A2A;line-height:1; }
+button[data-baseweb="tab"] { background:transparent!important;color:#444!important;font-family:'Inter',sans-serif!important;font-size:11px!important;font-weight:700!important;letter-spacing:1.5px!important;text-transform:uppercase!important;padding:14px 24px!important;border:none!important;border-radius:0!important; }
+button[data-baseweb="tab"]:hover { color:#AAA!important; }
+button[data-baseweb="tab"][aria-selected="true"] { color:#FFF!important; }
+[data-baseweb="tab-highlight"] { background:#FFF!important;height:1px!important; }
+[data-baseweb="tab-border"] { display:none!important; }
+[data-testid="stTabs"] [data-baseweb="tab-list"] { gap:0!important;border-bottom:1px solid #1C1C1C!important;background:#000!important;padding:0 4px!important;margin-bottom:0!important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -419,7 +511,7 @@ def color_log(text: str) -> str:
             colored += f'<span style="color:#00AAFF">{line}</span>\n'
         elif "CHANDELIER" in line:
             colored += f'<span style="color:#8866FF">{line}</span>\n'
-        elif "CRASH SPIKE" in line or "SPIKE" in line:
+        elif "SPIKE" in line:
             colored += f'<span style="color:#CC00FF">{line}</span>\n'
         else:
             colored += f'<span style="color:#1A4A7A">{line}</span>\n'
@@ -554,8 +646,8 @@ def render_bot_panel(cfg: dict, now_utc: datetime):
             </div>""", unsafe_allow_html=True)
     else:
         # Spike bot — show spike status
-        spike_col = "#CC00FF" if last_signal == "SPIKE" else "#555"
-        spike_txt = "⚡ SPIKE DETECTED" if last_signal == "SPIKE" else "WATCHING..."
+        spike_col = "#CC00FF" if last_signal == "BUY" else "#555"
+        spike_txt = "⚡ SPIKE — BUY SIGNAL" if last_signal == "BUY" else "WATCHING..."
         with sa:
             st.markdown(f"""<div class="glass" style="padding:12px 16px">
               <div class="metric-label">Spike Status</div>
@@ -629,7 +721,7 @@ def render_bot_panel(cfg: dict, now_utc: datetime):
     # Trade table
     if not df.empty:
         rows_html = ""
-        for _, r in df.head(10).iterrows():
+        for _, r in df.head(100).iterrows():
             res   = r.get("result", "")
             pnl_v = float(r.get("pnl_usd", 0))
             rmult = float(r.get("r_multiple", 0))
@@ -652,10 +744,12 @@ def render_bot_panel(cfg: dict, now_utc: datetime):
               <td style="color:#333;font-size:10px">{rn}</td>
             </tr>"""
         st.markdown(f"""<div class="glass" style="padding:0;overflow:hidden">
+          <div class="scroll-table">
           <table class="trade-table">
             <thead><tr><th>ID</th><th>Time (UTC)</th><th>Dir</th><th>Entry</th><th>Exit</th><th>PnL</th><th>R</th><th>Result</th><th>Reason</th></tr></thead>
             <tbody>{rows_html}</tbody>
           </table>
+          </div>
         </div>""", unsafe_allow_html=True)
 
     # Log
@@ -688,12 +782,20 @@ def _load_portfolio_state() -> dict:
 
 def _compute_equity(port: dict, states: dict) -> float:
     """True account equity = available_balance + sum of open stakes.
-    Deriv deducts stakes from available_balance the moment a contract opens,
-    so raw balance reads low while trades are live. Adding the stakes back
-    gives the real equity figure for display."""
-    avail = float(port.get("balance") or 0)
+    Deriv deducts stakes from available_balance the moment a contract opens.
+    Bot state files are updated most frequently (including during trade monitoring)
+    and carry the post-deduction available balance, so use the most recently
+    updated bot state rather than portfolio_state.balance which lags at trade open."""
+    avail = 0.0
+    best_ts = ""
+    for s in states.values():
+        ts  = s.get("updated_at", "")
+        bal = float(s.get("balance", 0) or 0)
+        if bal > 0 and ts > best_ts:
+            best_ts = ts
+            avail   = bal
     if not avail:
-        avail = max((float(s.get("balance", 0)) for s in states.values()), default=0)
+        avail = float(port.get("balance") or 0)
     open_stakes = sum(
         float((s.get("active_trade") or {}).get("stake", 0)) +
         float((s.get("active_trade") or {}).get("partial_stake", 0))
@@ -740,7 +842,7 @@ def render_overview(states, dfs, now_utc):
     mpnl_col = "#00E676" if month_pnl >= 0 else "#FF3366"
 
     st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-    st.markdown('<div style="font-size:11px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Portfolio Overview</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head">Portfolio Overview</div>', unsafe_allow_html=True)
 
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     with c1:
@@ -796,37 +898,28 @@ def render_overview(states, dfs, now_utc):
             + '</div>',
             unsafe_allow_html=True)
     with bar_col2:
-        # H1 Regime panel — all 3 bots
-        cs = states.get("CRASH1000", {})
-        bs = states.get("BOOM1000", {})
+        # H1 Regime panel — all 4 bots
         xs = states.get("frxXAUUSD", {})
-        c_filter = cs.get("h1_filter", "WARMUP")
-        b_filter = bs.get("h1_filter", "WARMUP")
-        c_h1c    = cs.get("h1_close")
-        c_h1e    = cs.get("h1_ema21")
-        b_h1c    = bs.get("h1_close")
-        b_h1e    = bs.get("h1_ema21")
-        x_regime = xs.get("h1_regime", "WARMUP")
-        x_h1c    = xs.get("h1_close")
-        x_h1e    = xs.get("h1_ema21")
+        eu = states.get("EURUSD", {})
+        gu = states.get("GBPUSD", {})
+        uj = states.get("USDJPY", {})
+        x_regime  = xs.get("h1_regime", "WARMUP")
+        eu_regime = eu.get("h1_regime", "WARMUP")
+        gu_regime = gu.get("h1_regime", "WARMUP")
+        uj_regime = uj.get("h1_regime", "WARMUP")
+        x_h1c  = xs.get("h1_close"); x_h1e  = xs.get("h1_ema21")
+        eu_h1c = eu.get("h1_close"); eu_h1e = eu.get("h1_ema21")
+        gu_h1c = gu.get("h1_close"); gu_h1e = gu.get("h1_ema21")
+        uj_h1c = uj.get("h1_close"); uj_h1e = uj.get("h1_ema21")
 
-        def regime_badge(filt_or_regime, h1c, h1e, bot_label, entry_condition, is_pullback=False):
-            if is_pullback:
-                if filt_or_regime == "BULL":
-                    col, badge, dot = "#00E676", "BULL - BUY", "🟢"
-                elif filt_or_regime == "BEAR":
-                    col, badge, dot = "#FF3366", "BEAR - SELL", "🔴"
-                else:
-                    col, badge, dot = "#555", "WARMUP", "⚪"
+        def regime_badge(regime, h1c, h1e, bot_label, entry_condition):
+            if regime == "BULL":
+                col, badge, dot = "#00E676", "BULL - BUY", "🟢"
+            elif regime == "BEAR":
+                col, badge, dot = "#FF3366", "BEAR - SELL", "🔴"
             else:
-                if filt_or_regime == "PASS":
-                    col, badge, dot = "#00E676", "ACTIVE", "🟢"
-                elif filt_or_regime == "BLOCKED":
-                    col, badge, dot = "#FF3366", "BLOCKED", "🔴"
-                else:
-                    col, badge, dot = "#555", "WARMUP", "⚪"
-            price_str = (f"H1: {h1c:.5f} vs EMA21: {h1e:.5f}" if (h1c and h1e and h1c > 100)
-                         else (f"H1: {h1c:.1f} vs EMA21: {h1e:.1f}" if h1c and h1e else "loading..."))
+                col, badge, dot = "#555", "WARMUP", "⚪"
+            price_str = f"H1: {h1c:.5f} vs EMA21: {h1e:.5f}" if (h1c and h1e) else "loading..."
             return f"""
             <div style="padding:10px 0;border-bottom:1px solid #1A1A1A">
               <div style="display:flex;justify-content:space-between;align-items:center">
@@ -839,18 +932,19 @@ def render_overview(states, dfs, now_utc):
             </div>"""
 
         st.markdown(
-            '<div class="glass" style="padding:16px 20px">'
+            '<div class="glass" style="padding:16px 20px;max-height:320px;overflow-y:auto">'
             '<div style="font-size:10px;color:#555;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">H1 Regime · Entry Gate</div>'
-            + regime_badge(c_filter, c_h1c, c_h1e, "CRASH 1000 (BUY)", "ACTIVE when H1 close > H1 EMA21")
-            + regime_badge(b_filter, b_h1c, b_h1e, "BOOM 1000 (SELL)", "ACTIVE when H1 close < H1 EMA21")
-            + regime_badge(x_regime, x_h1c, x_h1e, "XAUUSD (BUY+SELL)", "BULL → BUY  |  BEAR → SELL", is_pullback=True)
-            + '<div style="font-size:10px;color:#2A2A2A;margin-top:8px">Crash/Boom trade opposite regimes · XAUUSD trades both</div>'
+            + regime_badge(x_regime,  x_h1c,  x_h1e,  "XAUUSD (BUY+SELL)",  "BULL → BUY  |  BEAR → SELL")
+            + regime_badge(eu_regime, eu_h1c, eu_h1e, "EUR/USD (BUY+SELL)", "BULL → BUY  |  BEAR → SELL")
+            + regime_badge(gu_regime, gu_h1c, gu_h1e, "GBP/USD (SPIKE — BUY only)", "Spike > 2.0× ATR → BUY reversal  |  H1 shown for info only")
+            + regime_badge(uj_regime, uj_h1c, uj_h1e, "USD/JPY (BUY+SELL)", "BULL → BUY  |  BEAR → SELL")
+            + '<div style="font-size:10px;color:#2A2A2A;margin-top:8px">XAUUSD · EUR/USD · USD/JPY: both directions via H1 regime &nbsp;·&nbsp; GBP/USD: BUY-only spike reversion</div>'
             + '</div>',
             unsafe_allow_html=True)
 
     # ── Bot status cards ───────────────────────────────────────────────────────
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-    st.markdown('<div style="font-size:11px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Bot Status</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head">Bot Status</div>', unsafe_allow_html=True)
 
     cols = st.columns(len(BOTS))
     for i, (key, cfg) in enumerate(BOTS.items()):
@@ -860,18 +954,18 @@ def render_overview(states, dfs, now_utc):
         pnl   = df["pnl_usd"].sum() if not df.empty else 0
         td    = int(s.get("trades_today", 0))
         pnl_c = "#00E676" if pnl >= 0 else "#FF3366"
-        filt  = s.get("h1_filter", "WARMUP")
+        filt  = s.get("h1_regime", s.get("h1_filter", "WARMUP"))
         sig   = s.get("last_signal", "WAIT")
 
-        filt_col = "#00E676" if filt == "PASS" else ("#FF3366" if filt == "BLOCKED" else "#555")
-        sig_col  = "#FFB800" if sig in ("SPIKE", "TRADE_OPEN") else ("#FF3366" if "BLOCKED" in sig else "#444")
+        filt_col = "#00E676" if filt in ("BULL", "PASS") else ("#FF3366" if filt in ("BEAR", "BLOCKED") else "#555")
+        sig_col  = "#00E676" if sig == "BUY" else ("#FF3366" if sig in ("SELL",) else ("#FFB800" if sig == "TRADE_OPEN" else ("#FF3366" if "BLOCKED" in sig else "#444")))
 
         with cols[i]:
             st.markdown(f"""<div class="overview-card" style="border-top:3px solid {cfg['color']}">
               <div style="font-size:14px;font-weight:800;color:{cfg['color']};margin-bottom:8px">
                 {dot_html(cfg['dot'], alive)} {cfg['label']}
               </div>
-              <div style="font-size:22px;font-weight:900;color:#FFF;font-family:'JetBrains Mono',monospace">{td}/6 trades</div>
+              <div style="font-size:22px;font-weight:900;color:#FFF;font-family:'JetBrains Mono',monospace">{td}/{cfg.get('max_trades',12)} trades</div>
               <div style="font-size:12px;color:{pnl_c};margin-top:4px">${pnl:+.2f} P&L</div>
               <div style="display:flex;gap:6px;margin-top:8px">
                 <span style="font-size:10px;color:{filt_col};background:{filt_col}22;padding:2px 6px;border-radius:3px">H1:{filt}</span>
@@ -915,7 +1009,7 @@ def render_overview(states, dfs, now_utc):
 
     # ── Combined Journal ───────────────────────────────────────────────────────
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-    st.markdown('<div style="font-size:11px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Combined Trade Journal — All Bots</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head">Combined Trade Journal — All Bots</div>', unsafe_allow_html=True)
 
     journal_dfs = []
     for key, cfg in BOTS.items():
@@ -968,6 +1062,7 @@ def render_overview(states, dfs, now_utc):
             )
 
         st.markdown(f"""<div class="glass" style="padding:0;overflow:hidden">
+          <div class="scroll-table">
           <table class="trade-table">
             <thead><tr>
               <th>Time (UTC)</th><th>Bot</th><th>Symbol</th><th>Dir</th>
@@ -975,6 +1070,7 @@ def render_overview(states, dfs, now_utc):
             </tr></thead>
             <tbody>{rows_html}</tbody>
           </table>
+          </div>
         </div>""", unsafe_allow_html=True)
 
         st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
@@ -998,9 +1094,9 @@ def render_overview(states, dfs, now_utc):
 # ── EDGE TRACKER ──────────────────────────────────────────────────────────────
 def render_edge_tracker():
     selected = st.radio(
-        "Select Bot", ["CRASH1000", "BOOM1000", "frxXAUUSD"],
+        "Select Bot", ["frxXAUUSD", "EURUSD", "GBPUSD", "USDJPY"],
         horizontal=True, key="et_selector",
-        format_func=lambda x: {"CRASH1000": "Crash 1000", "BOOM1000": "Boom 1000", "frxXAUUSD": "XAUUSD Gold"}.get(x, x),
+        format_func=lambda x: {"frxXAUUSD": "XAUUSD Gold", "EURUSD": "EUR/USD", "GBPUSD": "GBP/USD", "USDJPY": "USD/JPY"}.get(x, x),
     )
     bt  = BT_MAP[selected]
     cfg = BOTS[selected]
@@ -1056,7 +1152,16 @@ def render_edge_tracker():
     p_val     = 0.5 * math.erfc(-z / math.sqrt(2))
 
     n_losses  = sum(1 for r in live_r if r < 0)
-    p_consec  = (1 - bt["wr"]) ** n_losses if n_losses > 0 else 1.0
+    # Longest consecutive loss streak (order-independent; use for realistic streak probability)
+    _max_streak, _cur = 0, 0
+    for _r in live_r:
+        if _r < 0:
+            _cur += 1
+            _max_streak = max(_max_streak, _cur)
+        else:
+            _cur = 0
+    max_consec_losses = _max_streak
+    p_consec  = (1 - bt["wr"]) ** max_consec_losses if max_consec_losses > 0 else 1.0
     progress  = min(n / bt["trades_for_sig"], 1.0)
     kelly_ratio = bt["our_risk"] / bt["kelly_full"]
 
@@ -1314,198 +1419,203 @@ def render_edge_tracker():
     # ── Section: Forward Test Live Tracker ───────────────────────────────────
     st.markdown('<div style="font-size:11px;color:#444;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Live Forward Test Tracker</div>', unsafe_allow_html=True)
 
+    _tracker_ph = st.empty()
     if n == 0:
-        st.markdown('<div class="et-card" style="text-align:center;padding:40px"><div style="color:#333;font-size:14px">No live trades yet — bot is scanning for signals...</div><div style="color:#222;font-size:11px;margin-top:8px">Trades appear here automatically as they close. Auto-refresh every 15s.</div></div>', unsafe_allow_html=True)
-        return
-
-    # ── Row 1: Status + Z-score + Live PF + Rolling window + Sample progress
-    fs1, fs2, fs3, fs4, fs5 = st.columns(5)
-
-    with fs1:
-        st.markdown(f"""<div class="et-card" style="border-top:3px solid {status_col}">
-          <div class="et-label">Edge Status</div>
-          <div class="et-value" style="color:{status_col};font-size:18px">{status_txt}</div>
-          <div class="et-sub" style="color:{status_col};opacity:0.8">{status_sub}</div>
-        </div>""", unsafe_allow_html=True)
-
-    with fs2:
-        z_col = "#00E676" if z > -1 else ("#FFB800" if z > -2 else "#FF3366")
-        st.markdown(f"""<div class="et-card">
-          <div class="et-label">Z-Score vs Backtest</div>
-          <div class="et-value" style="color:{z_col}">{z:+.2f}σ</div>
-          <div class="et-sub">p-value: {p_val:.4f}</div>
-          <div class="et-sub" style="color:#333;margin-top:4px">&lt;-1.96=caution · &lt;-2.58=alarm</div>
-        </div>""", unsafe_allow_html=True)
-
-    with fs3:
-        lpf_col = _pf_color(live_pf_disp) if n > 0 else "#333"
-        st.markdown(f"""<div class="et-card">
-          <div class="et-label">Live Profit Factor</div>
-          <div class="et-value" style="color:{lpf_col}">{live_pf_str}</div>
-          <div class="et-sub">BT: {bt['pf']:.2f} · OOS: {bt['oos_pf']:.2f}</div>
-          <div class="et-sub" style="color:#333;margin-top:4px">Avg R: {live_mean:+.3f}R (BT {bt['mean_r']:+.3f}R)</div>
-        </div>""", unsafe_allow_html=True)
-
-    with fs4:
-        rpf_str = f"{roll_pf:.2f}" if roll_pf != float("inf") and roll_n > 0 else ("∞" if roll_wins and not roll_losses else "—")
-        st.markdown(f"""<div class="et-card" style="border-top:3px solid {roll_col}">
-          <div class="et-label">Rolling Edge · Last {ROLL_N}</div>
-          <div class="et-value" style="color:{roll_col}">{roll_verdict}</div>
-          <div class="et-sub">PF {rpf_str} · WR {roll_wr*100:.0f}% · {roll_n} trades</div>
-          <div class="et-sub" style="color:#333;margin-top:4px">AvgR {roll_mean:+.3f}R — recent market fit</div>
-        </div>""", unsafe_allow_html=True)
-
-    with fs5:
-        prog_col = "#00E676" if progress >= 0.5 else ("#FFB800" if progress >= 0.1 else "#555")
-        st.markdown(f"""<div class="et-card">
-          <div class="et-label">Sample Progress</div>
-          <div class="et-value" style="color:{prog_col}">{n} <span style="font-size:13px;color:#444">/ {bt['trades_for_sig']}</span></div>
-          <div class="et-sub">{progress*100:.0f}% to significance</div>
-          <div class="prog-track"><div class="prog-fill" style="width:{progress*100:.1f}%;background:{prog_col}"></div></div>
-          <div class="et-sub" style="color:#333;margin-top:4px">Streak prob: {p_consec*100:.1f}%</div>
-        </div>""", unsafe_allow_html=True)
-
-    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-
-    # ── Forward Test Chart: cumulative R with sigma bands ──────────────────
-    trade_nums   = list(range(1, n + 1))
-    cumul_r      = list(np.cumsum(live_r))
-    expected     = [i * bt["mean_r"] for i in trade_nums]
-    sigma1_hi    = [e + bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
-    sigma1_lo    = [e - bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
-    sigma2_hi    = [e + 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
-    sigma2_lo    = [e - 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
-
-    # Extend bands to target trade count for projection
-    proj_n = bt["trades_for_sig"]
-    proj_nums = list(range(1, proj_n + 1))
-    proj_exp  = [i * bt["mean_r"] for i in proj_nums]
-    proj_s1hi = [e + bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
-    proj_s1lo = [e - bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
-    proj_s2hi = [e + 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
-    proj_s2lo = [e - 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
-
-    fig_fwd = go.Figure()
-
-    # 2-sigma band (projection)
-    fig_fwd.add_trace(go.Scatter(
-        x=proj_nums + proj_nums[::-1], y=proj_s2hi + proj_s2lo[::-1],
-        fill="toself", fillcolor="rgba(255,255,255,0.02)",
-        line=dict(color="rgba(0,0,0,0)"), showlegend=True, name="2σ band",
-        hoverinfo="skip",
-    ))
-    # 1-sigma band (projection)
-    fig_fwd.add_trace(go.Scatter(
-        x=proj_nums + proj_nums[::-1], y=proj_s1hi + proj_s1lo[::-1],
-        fill="toself", fillcolor="rgba(255,255,255,0.05)",
-        line=dict(color="rgba(0,0,0,0)"), showlegend=True, name="1σ band",
-        hoverinfo="skip",
-    ))
-    # Expected line (projection)
-    fig_fwd.add_trace(go.Scatter(
-        x=proj_nums, y=proj_exp,
-        line=dict(color="rgba(255,255,255,0.25)", width=1.5, dash="dot"),
-        showlegend=True, name="Expected (backtest avg)",
-        hovertemplate="Trade %{x}<br>Expected: %{y:+.1f}R<extra></extra>",
-    ))
-    # Actual live cumulative R
-    dot_colors = ["#00E676" if r > 0 else "#FF3366" for r in live_r]
-    fig_fwd.add_trace(go.Scatter(
-        x=trade_nums, y=cumul_r,
-        mode="lines+markers",
-        line=dict(color="#FFFFFF", width=2.5),
-        marker=dict(size=8, color=dot_colors, line=dict(width=2, color="#111")),
-        showlegend=True, name="Live cumulative R",
-        hovertemplate="Trade %{x}<br>Cumulative R: %{y:+.2f}R<extra></extra>",
-    ))
-    # Zero line
-    fig_fwd.add_hline(y=0, line_color="rgba(255,255,255,0.1)", line_width=1)
-
-    fig_fwd.update_layout(
-        paper_bgcolor=CHART_BG, plot_bgcolor=CHART_BG,
-        font=dict(color="#555", family="Inter", size=11),
-        margin=dict(l=8, r=8, t=12, b=8), height=300,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(color="#666", size=10), bgcolor="rgba(0,0,0,0)"),
-        xaxis=dict(gridcolor=GRID_COL, showgrid=True, zeroline=False, linecolor=AXIS_COL,
-                   title=dict(text="Trade #", font=dict(color="#444", size=10))),
-        yaxis=dict(gridcolor=GRID_COL, showgrid=True, zeroline=False, linecolor=AXIS_COL,
-                   ticksuffix="R", title=dict(text="Cumulative R", font=dict(color="#444", size=10))),
-    )
-    st.plotly_chart(fig_fwd, use_container_width=True, config={"displayModeBar": False})
-
-    # ── Trade-by-trade breakdown ───────────────────────────────────────────
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-    st.markdown('<div style="font-size:10px;color:#444;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Trade-by-Trade vs Backtest</div>', unsafe_allow_html=True)
-
-    if not df.empty:
-        rows_html = ""
-        cumr = 0.0
-        expected_cumr = 0.0
-        for i, (_, row) in enumerate(df.sort_values("close_time").iterrows(), 1):
-            r        = float(row.get("r_multiple", 0))
-            cumr    += r
-            expected_cumr += bt["mean_r"]
-            deviation = cumr - expected_cumr
-            band_1s = bt["std_r"] * math.sqrt(i)
-            z_i     = deviation / band_1s if band_1s > 0 else 0
-            pnl     = float(row.get("pnl_usd", 0))
-            reason  = row.get("reason", "")
-            dt      = str(row.get("open_time", ""))[:16]
-            r_col   = "#00E676" if r > 0 else "#FF3366"
-            cum_col = "#00E676" if cumr >= expected_cumr else "#FF3366"
-            z_col2  = "#00E676" if z_i > -1 else ("#FFB800" if z_i > -2 else "#FF3366")
-            rows_html += f"""<tr>
-              <td class="mono" style="color:#444">{i}</td>
-              <td style="color:#555;font-size:10px">{dt}</td>
-              <td class="mono" style="color:{r_col};font-weight:700">{r:+.2f}R</td>
-              <td class="mono" style="color:{cum_col}">{cumr:+.2f}R</td>
-              <td class="mono" style="color:#444">{expected_cumr:+.2f}R</td>
-              <td class="mono" style="color:{z_col2}">{z_i:+.2f}σ</td>
-              <td class="mono" style="color:{'#00E676' if pnl>0 else '#FF3366'}">${pnl:+.2f}</td>
-              <td style="color:#333;font-size:10px">{reason}</td>
-            </tr>"""
-
-        st.markdown(f"""<div class="glass" style="padding:0;overflow:hidden">
-          <table class="trade-table">
-            <thead><tr>
-              <th>#</th><th>Time (UTC)</th><th>R</th>
-              <th>Cumul R</th><th>Expected</th><th>Z-score</th><th>PnL</th><th>Reason</th>
-            </tr></thead>
-            <tbody>{rows_html}</tbody>
-          </table>
-        </div>""", unsafe_allow_html=True)
-
-    # ── Interpretation box ────────────────────────────────────────────────
-    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-    need_more = bt["trades_for_sig"] - n
-    z_col = "#00E676" if z > -1 else ("#FFB800" if z > -2 else "#FF3366")
-    if need_more > 0:
-        action_line = f'Need <span style="color:#888">{need_more}</span> more trades before a statistically valid edge verdict.'
+        with _tracker_ph.container():
+            st.markdown('<div class="et-card" style="text-align:center;padding:40px"><div style="color:#333;font-size:14px">No live trades yet — bot is scanning for signals...</div><div style="color:#222;font-size:11px;margin-top:8px">Trades appear here automatically as they close. Auto-refresh every 15s.</div></div>', unsafe_allow_html=True)
     else:
-        if status_txt == "ON TRACK":
-            action_line = '<span style="color:#00E676">Edge confirmed live — continue at current risk.</span>'
-        elif status_txt in ("ALARM", "CAUTION"):
-            action_line = '<span style="color:#FFB800">Review filter conditions and recent market regime before next trade.</span>'
-        else:
-            action_line = "Monitor closely."
-    st.markdown(f"""
-    <div style="background:#0D0D0D;border:1px solid #1E1E1E;border-left:3px solid {status_col};
-                border-radius:10px;padding:14px 18px;font-size:12px;line-height:2.0;color:#666">
-      <span style="color:{status_col};font-weight:700;font-size:13px">{status_txt}</span>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      Z-score <span style="color:{z_col};font-weight:600">{z:+.2f}σ</span>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      Live PF <span style="color:{_pf_color(live_pf_disp) if n>0 else '#444'};font-weight:600">{live_pf_str}</span>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      Rolling ({roll_n} trades) <span style="color:{roll_col};font-weight:600">{roll_verdict}</span>
-      <br>
-      {n} live trades ({progress*100:.0f}% of the {bt['trades_for_sig']} needed) ·
-      Probability of current loss streak by chance: <span style="color:#888">{p_consec*100:.1f}%</span>
-      {'<span style="color:#00E676"> — normal</span>' if p_consec > 0.05 else '<span style="color:#FFB800"> — uncommon but in range</span>'}
-      <br>
-      {action_line}
-    </div>""", unsafe_allow_html=True)
+        with _tracker_ph.container():
+
+            # ── Row 1: Status + Z-score + Live PF + Rolling window + Sample progress
+            fs1, fs2, fs3, fs4, fs5 = st.columns(5)
+
+            with fs1:
+                st.markdown(f"""<div class="et-card" style="border-top:3px solid {status_col}">
+                  <div class="et-label">Edge Status</div>
+                  <div class="et-value" style="color:{status_col};font-size:18px">{status_txt}</div>
+                  <div class="et-sub" style="color:{status_col};opacity:0.8">{status_sub}</div>
+                </div>""", unsafe_allow_html=True)
+
+            with fs2:
+                z_col = "#00E676" if z > -1 else ("#FFB800" if z > -2 else "#FF3366")
+                st.markdown(f"""<div class="et-card">
+                  <div class="et-label">Z-Score vs Backtest</div>
+                  <div class="et-value" style="color:{z_col}">{z:+.2f}σ</div>
+                  <div class="et-sub">p-value: {p_val:.4f}</div>
+                  <div class="et-sub" style="color:#333;margin-top:4px">&lt;-1.96=caution · &lt;-2.58=alarm</div>
+                </div>""", unsafe_allow_html=True)
+
+            with fs3:
+                lpf_col = _pf_color(live_pf_disp) if n > 0 else "#333"
+                st.markdown(f"""<div class="et-card">
+                  <div class="et-label">Live Profit Factor</div>
+                  <div class="et-value" style="color:{lpf_col}">{live_pf_str}</div>
+                  <div class="et-sub">BT: {bt['pf']:.2f} · OOS: {bt['oos_pf']:.2f}</div>
+                  <div class="et-sub" style="color:#333;margin-top:4px">Avg R: {live_mean:+.3f}R (BT {bt['mean_r']:+.3f}R)</div>
+                </div>""", unsafe_allow_html=True)
+
+            with fs4:
+                rpf_str = f"{roll_pf:.2f}" if roll_pf != float("inf") and roll_n > 0 else ("∞" if roll_wins and not roll_losses else "—")
+                st.markdown(f"""<div class="et-card" style="border-top:3px solid {roll_col}">
+                  <div class="et-label">Rolling Edge · Last {ROLL_N}</div>
+                  <div class="et-value" style="color:{roll_col}">{roll_verdict}</div>
+                  <div class="et-sub">PF {rpf_str} · WR {roll_wr*100:.0f}% · {roll_n} trades</div>
+                  <div class="et-sub" style="color:#333;margin-top:4px">AvgR {roll_mean:+.3f}R — recent market fit</div>
+                </div>""", unsafe_allow_html=True)
+
+            with fs5:
+                prog_col = "#00E676" if progress >= 0.5 else ("#FFB800" if progress >= 0.1 else "#555")
+                st.markdown(f"""<div class="et-card">
+                  <div class="et-label">Sample Progress</div>
+                  <div class="et-value" style="color:{prog_col}">{n} <span style="font-size:13px;color:#444">/ {bt['trades_for_sig']}</span></div>
+                  <div class="et-sub">{progress*100:.0f}% to significance</div>
+                  <div class="prog-track"><div class="prog-fill" style="width:{progress*100:.1f}%;background:{prog_col}"></div></div>
+                  <div class="et-sub" style="color:#333;margin-top:4px">Max streak: {max_consec_losses}L · {p_consec*100:.1f}%</div>
+                </div>""", unsafe_allow_html=True)
+
+            st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+            # ── Forward Test Chart: cumulative R with sigma bands ──────────────────
+            trade_nums   = list(range(1, n + 1))
+            cumul_r      = list(np.cumsum(live_r))
+            expected     = [i * bt["mean_r"] for i in trade_nums]
+            sigma1_hi    = [e + bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
+            sigma1_lo    = [e - bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
+            sigma2_hi    = [e + 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
+            sigma2_lo    = [e - 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(trade_nums, expected)]
+
+            # Extend bands to target trade count for projection
+            proj_n = bt["trades_for_sig"]
+            proj_nums = list(range(1, proj_n + 1))
+            proj_exp  = [i * bt["mean_r"] for i in proj_nums]
+            proj_s1hi = [e + bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
+            proj_s1lo = [e - bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
+            proj_s2hi = [e + 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
+            proj_s2lo = [e - 2 * bt["std_r"] * math.sqrt(i) for i, e in zip(proj_nums, proj_exp)]
+
+            fig_fwd = go.Figure()
+
+            # 2-sigma band (projection)
+            fig_fwd.add_trace(go.Scatter(
+                x=proj_nums + proj_nums[::-1], y=proj_s2hi + proj_s2lo[::-1],
+                fill="toself", fillcolor="rgba(255,255,255,0.02)",
+                line=dict(color="rgba(0,0,0,0)"), showlegend=True, name="2σ band",
+                hoverinfo="skip",
+            ))
+            # 1-sigma band (projection)
+            fig_fwd.add_trace(go.Scatter(
+                x=proj_nums + proj_nums[::-1], y=proj_s1hi + proj_s1lo[::-1],
+                fill="toself", fillcolor="rgba(255,255,255,0.05)",
+                line=dict(color="rgba(0,0,0,0)"), showlegend=True, name="1σ band",
+                hoverinfo="skip",
+            ))
+            # Expected line (projection)
+            fig_fwd.add_trace(go.Scatter(
+                x=proj_nums, y=proj_exp,
+                line=dict(color="rgba(255,255,255,0.25)", width=1.5, dash="dot"),
+                showlegend=True, name="Expected (backtest avg)",
+                hovertemplate="Trade %{x}<br>Expected: %{y:+.1f}R<extra></extra>",
+            ))
+            # Actual live cumulative R
+            dot_colors = ["#00E676" if r > 0 else "#FF3366" for r in live_r]
+            fig_fwd.add_trace(go.Scatter(
+                x=trade_nums, y=cumul_r,
+                mode="lines+markers",
+                line=dict(color="#FFFFFF", width=2.5),
+                marker=dict(size=8, color=dot_colors, line=dict(width=2, color="#111")),
+                showlegend=True, name="Live cumulative R",
+                hovertemplate="Trade %{x}<br>Cumulative R: %{y:+.2f}R<extra></extra>",
+            ))
+            # Zero line
+            fig_fwd.add_hline(y=0, line_color="rgba(255,255,255,0.1)", line_width=1)
+
+            fig_fwd.update_layout(
+                paper_bgcolor=CHART_BG, plot_bgcolor=CHART_BG,
+                font=dict(color="#555", family="Inter", size=11),
+                margin=dict(l=8, r=8, t=12, b=8), height=300,
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                            font=dict(color="#666", size=10), bgcolor="rgba(0,0,0,0)"),
+                xaxis=dict(gridcolor=GRID_COL, showgrid=True, zeroline=False, linecolor=AXIS_COL,
+                           title=dict(text="Trade #", font=dict(color="#444", size=10))),
+                yaxis=dict(gridcolor=GRID_COL, showgrid=True, zeroline=False, linecolor=AXIS_COL,
+                           ticksuffix="R", title=dict(text="Cumulative R", font=dict(color="#444", size=10))),
+            )
+            st.plotly_chart(fig_fwd, use_container_width=True, config={"displayModeBar": False})
+
+            # ── Trade-by-trade breakdown ───────────────────────────────────────────
+            st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+            st.markdown('<div style="font-size:10px;color:#444;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Trade-by-Trade vs Backtest</div>', unsafe_allow_html=True)
+
+            if not df.empty:
+                rows_html = ""
+                cumr = 0.0
+                expected_cumr = 0.0
+                for i, (_, row) in enumerate(df.sort_values("close_time").iterrows(), 1):
+                    r        = float(row.get("r_multiple", 0))
+                    cumr    += r
+                    expected_cumr += bt["mean_r"]
+                    deviation = cumr - expected_cumr
+                    band_1s = bt["std_r"] * math.sqrt(i)
+                    z_i     = deviation / band_1s if band_1s > 0 else 0
+                    pnl     = float(row.get("pnl_usd", 0))
+                    reason  = row.get("reason", "")
+                    dt      = str(row.get("open_time", ""))[:16]
+                    r_col   = "#00E676" if r > 0 else "#FF3366"
+                    cum_col = "#00E676" if cumr >= expected_cumr else "#FF3366"
+                    z_col2  = "#00E676" if z_i > -1 else ("#FFB800" if z_i > -2 else "#FF3366")
+                    rows_html += f"""<tr>
+                      <td class="mono" style="color:#444">{i}</td>
+                      <td style="color:#555;font-size:10px">{dt}</td>
+                      <td class="mono" style="color:{r_col};font-weight:700">{r:+.2f}R</td>
+                      <td class="mono" style="color:{cum_col}">{cumr:+.2f}R</td>
+                      <td class="mono" style="color:#444">{expected_cumr:+.2f}R</td>
+                      <td class="mono" style="color:{z_col2}">{z_i:+.2f}σ</td>
+                      <td class="mono" style="color:{'#00E676' if pnl>0 else '#FF3366'}">${pnl:+.2f}</td>
+                      <td style="color:#333;font-size:10px">{reason}</td>
+                    </tr>"""
+
+                st.markdown(f"""<div class="glass" style="padding:0;overflow:hidden">
+                  <div class="scroll-table">
+                  <table class="trade-table">
+                    <thead><tr>
+                      <th>#</th><th>Time (UTC)</th><th>R</th>
+                      <th>Cumul R</th><th>Expected</th><th>Z-score</th><th>PnL</th><th>Reason</th>
+                    </tr></thead>
+                    <tbody>{rows_html}</tbody>
+                  </table>
+                  </div>
+                </div>""", unsafe_allow_html=True)
+
+            # ── Interpretation box ────────────────────────────────────────────────
+            st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+            need_more = bt["trades_for_sig"] - n
+            z_col = "#00E676" if z > -1 else ("#FFB800" if z > -2 else "#FF3366")
+            if need_more > 0:
+                action_line = f'Need <span style="color:#888">{need_more}</span> more trades before a statistically valid edge verdict.'
+            else:
+                if status_txt == "ON TRACK":
+                    action_line = '<span style="color:#00E676">Edge confirmed live — continue at current risk.</span>'
+                elif status_txt in ("ALARM", "CAUTION"):
+                    action_line = '<span style="color:#FFB800">Review filter conditions and recent market regime before next trade.</span>'
+                else:
+                    action_line = "Monitor closely."
+            st.markdown(f"""
+            <div style="background:#0D0D0D;border:1px solid #1E1E1E;border-left:3px solid {status_col};
+                        border-radius:10px;padding:14px 18px;font-size:12px;line-height:2.0;color:#666">
+              <span style="color:{status_col};font-weight:700;font-size:13px">{status_txt}</span>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+              Z-score <span style="color:{z_col};font-weight:600">{z:+.2f}σ</span>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+              Live PF <span style="color:{_pf_color(live_pf_disp) if n>0 else '#444'};font-weight:600">{live_pf_str}</span>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+              Rolling ({roll_n} trades) <span style="color:{roll_col};font-weight:600">{roll_verdict}</span>
+              <br>
+              {n} live trades ({progress*100:.0f}% of the {bt['trades_for_sig']} needed) ·
+              Max consecutive loss streak: <span style="color:#888">{max_consec_losses}</span> trades · chance: <span style="color:#888">{p_consec*100:.1f}%</span>
+              {'<span style="color:#00E676"> — normal variance</span>' if p_consec > 0.05 else ('<span style="color:#FFB800"> — uncommon but possible</span>' if p_consec > 0.005 else '<span style="color:#FF3366"> — rare, investigate</span>')}
+              <br>
+              {action_line}
+            </div>""", unsafe_allow_html=True)
 
 
 # ── MAIN RENDER ───────────────────────────────────────────────────────────────
@@ -1534,7 +1644,7 @@ def render():
         <div class="hero-logo">
           <div class="hero-icon">⚡</div>
           <div>
-            <div class="hero-title">HYPOTHERMIA — TRI-BOT</div>
+            <div class="hero-title">HYPOTHERMIA — QUAD-BOT</div>
             <div class="hero-name">Cyprian Masvikeni · CTM Trading</div>
             <div class="hero-sub">{dots_html} · Deriv API · x100</div>
           </div>
@@ -1552,8 +1662,8 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
-    tab_overview, tab_edge, tab_crash, tab_boom, tab_xau = st.tabs([
-        "Overview", "Edge Tracker", "Crash 1000", "Boom 1000", "XAUUSD Gold"
+    tab_overview, tab_edge, tab_xau, tab_eur, tab_gbp, tab_usd = st.tabs([
+        "Overview", "Edge Tracker", "XAUUSD Gold", "EUR/USD", "GBP/USD", "USD/JPY"
     ])
 
     with tab_overview:
@@ -1562,20 +1672,23 @@ def render():
     with tab_edge:
         render_edge_tracker()
 
-    with tab_crash:
-        render_bot_panel(BOTS["CRASH1000"], now_utc)
-
-    with tab_boom:
-        render_bot_panel(BOTS["BOOM1000"], now_utc)
-
     with tab_xau:
         render_bot_panel(BOTS["frxXAUUSD"], now_utc)
+
+    with tab_eur:
+        render_bot_panel(BOTS["EURUSD"], now_utc)
+
+    with tab_gbp:
+        render_bot_panel(BOTS["GBPUSD"], now_utc)
+
+    with tab_usd:
+        render_bot_panel(BOTS["USDJPY"], now_utc)
 
     # Footer
     st.markdown(f"""
     <div style="margin-top:16px;padding:12px 0;border-top:1px solid #1A1A1A;
                 display:flex;justify-content:space-between;align-items:center">
-      <div style="color:#333;font-size:11px">⚡ CTM Trading · Hypothermia Tri-Bot · Deriv API · x100</div>
+      <div style="color:#333;font-size:11px">⚡ CTM Trading · Hypothermia Quad-Bot · Deriv API · x100</div>
       <div style="color:#333;font-size:11px;font-family:'JetBrains Mono',monospace">
         {now_cat.strftime('%H:%M:%S')} CAT · Auto-refresh 15s
       </div>
